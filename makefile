@@ -13,7 +13,7 @@ obj:
 bin:
 	mkdir -p bin
 
-bin/$(TARGET): obj/main.o obj/graph.o obj/graph-rep.o obj/inc-matrix.o obj/adj-matrix.o obj/adj-list.o
+bin/$(TARGET): obj/main.o obj/graph.o obj/inc-matrix.o obj/adj-matrix.o obj/adj-list.o
 	$(CC) -o bin/$(TARGET) obj/* $(LDFLAGS)
 
 obj/main.o: src/main.cpp src/*.hpp
@@ -22,16 +22,13 @@ obj/main.o: src/main.cpp src/*.hpp
 obj/graph.o: src/graph.cpp src/graph.hpp src/graph-rep.hpp
 	$(CC) -c $(CCFLAGS) src/graph.cpp -o obj/graph.o
 
-obj/graph-rep.o: src/graph-rep.hpp src/graph-rep.cpp src/list.hpp
-	$(CC) -c $(CCFLAGS) src/graph-rep.cpp -o obj/graph-rep.o
-
-obj/inc-matrix.o: src/inc-matrix.hpp src/inc-matrix.cpp src/list.hpp
+obj/inc-matrix.o: src/graph-rep.hpp src/inc-matrix.hpp src/inc-matrix.cpp src/list.hpp
 	$(CC) -c $(CCFLAGS) src/inc-matrix.cpp -o obj/inc-matrix.o
 
-obj/adj-matrix.o: src/adj-matrix.hpp src/adj-matrix.cpp src/list.hpp
+obj/adj-matrix.o: src/graph-rep.hpp src/adj-matrix.hpp src/adj-matrix.cpp src/list.hpp
 	$(CC) -c $(CCFLAGS) src/adj-matrix.cpp -o obj/adj-matrix.o
 
-obj/adj-list.o: src/adj-list.hpp src/adj-list.cpp src/list.hpp
+obj/adj-list.o: src/graph-rep.hpp src/adj-list.hpp src/adj-list.cpp src/list.hpp
 	$(CC) -c $(CCFLAGS) src/adj-list.cpp -o obj/adj-list.o
 
 clean:

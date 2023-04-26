@@ -13,7 +13,7 @@ public:
     virtual size_t n_edges() = 0;
     virtual List<size_t> vertices() = 0;
     virtual List<size_t> neighbors(size_t u) = 0;
-    virtual size_t degree(size_t u);
+    virtual size_t degree(size_t u) = 0;
     virtual void add_edge(size_t u, size_t v) = 0;
     virtual void del_edge(size_t u, size_t v) = 0;
 };

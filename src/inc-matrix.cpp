@@ -24,19 +24,27 @@ List<size_t> IncMatrix::vertices() {
     return vs;
 }
 
+size_t IncMatrix::degree(size_t u) {
+    size_t d = 0;
+    for (auto e : m)
+        d += e[u];
+    return d;
+}
+
 List<size_t> IncMatrix::neighbors(size_t u) {
     List<size_t> n;
     for (auto e : m) {
         if (!e[u])
             continue;
-        if (e[u] > 1)
+        if (e[u] > 1) {
             n.insert(u);
-        else 
-            for (size_t v = 0; v < v_max; ++v)
-                if (e[v] && v != u) {
-                    n.insert(v);
-                    break;
-                }
+            continue;
+        }
+        for (size_t v = 0; v < v_max; ++v)
+            if (e[v] && v != u) {
+                n.insert(v);
+                break;
+            }
     }
     return n;
 }

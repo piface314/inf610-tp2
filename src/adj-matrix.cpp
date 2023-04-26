@@ -30,6 +30,13 @@ List<size_t> AdjMatrix::vertices() {
     return vs;
 }
 
+size_t AdjMatrix::degree(size_t u) {
+    size_t d = 0;
+    for (size_t v = 0; v < v_max; ++v)
+        d += m[u*v_max + v];
+    return d;
+}
+
 List<size_t> AdjMatrix::neighbors(size_t u) {
     List<size_t> n;
     for (size_t v = 0; v < v_max; ++v)
