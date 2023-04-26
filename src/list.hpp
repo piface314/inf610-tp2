@@ -1,8 +1,9 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include "list.hpp"
+#include <memory>
 #include <iostream>
+#include "list.hpp"
 
 
 template <typename T>
@@ -27,6 +28,12 @@ public:
     List() {
         this->head = this->last = new ListNode<T>();
         this->n = 0;
+    }
+    List(const List<T>& rhs) {
+        this->head = this->last = new ListNode<T>();
+        this->n = 0;
+        for (ListNode<T> *node = rhs.head; node != NULL; node = node->next)
+            this->insert(node->item);
     }
     ~List() { delete head; }
     size_t size() { return n; }
@@ -103,6 +110,20 @@ public:
         removed->next = NULL;
         delete removed;
         return item;
+    }
+
+    void remove_item(T &item) {
+        ListNode<T> *removed = NULL;
+        ListNode<T> *current;
+        for (current = head; current->next != NULL && current->next->item != item;)
+            current = current->next;
+        removed = current->next;
+        current->next = removed->next;
+        if (current->next == NULL)
+            last = current;
+        --n;
+        removed->next = NULL;
+        delete removed;
     }
 
     friend std::ostream& operator<<(std::ostream& os, List<T>& list) {
