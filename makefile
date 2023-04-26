@@ -13,11 +13,14 @@ obj:
 bin:
 	mkdir -p bin
 
-bin/$(TARGET): obj/main.o obj/graph-rep.o obj/inc-matrix.o obj/adj-matrix.o obj/adj-list.o
+bin/$(TARGET): obj/main.o obj/graph.o obj/graph-rep.o obj/inc-matrix.o obj/adj-matrix.o obj/adj-list.o
 	$(CC) -o bin/$(TARGET) obj/* $(LDFLAGS)
 
 obj/main.o: src/main.cpp src/*.hpp
 	$(CC) -c $(CCFLAGS) src/main.cpp -o obj/main.o
+
+obj/graph.o: src/graph.cpp src/graph.hpp src/graph-rep.hpp
+	$(CC) -c $(CCFLAGS) src/graph.cpp -o obj/graph.o
 
 obj/graph-rep.o: src/graph-rep.hpp src/graph-rep.cpp src/list.hpp
 	$(CC) -c $(CCFLAGS) src/graph-rep.cpp -o obj/graph-rep.o
