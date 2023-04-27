@@ -9,7 +9,10 @@ Graph::~Graph() { }
 void Graph::add_edge(size_t u, size_t v) { rep->add_edge(u, v); }
 void Graph::del_edge(size_t u, size_t v) { rep->del_edge(u, v); }
 List<size_t> Graph::neighbors(size_t u) { return rep->neighbors(u); }
+size_t Graph::next_neighbor(size_t u) { return rep->next_neighbor(u); }
 size_t Graph::degree(size_t u) { return rep->degree(u); }
+size_t Graph::n_vertices() { return rep->n_vertices(); }
+size_t Graph::n_edges() { return rep->n_edges(); }
 
 void Graph::dfs(size_t v_0,
                 VertexVoidFn process_v, EdgeVoidFn process_e) {
@@ -98,8 +101,24 @@ List<size_t> Graph::eulerian_circuit() {
     List<size_t> circuit;
     if (!is_eulerian())
         return circuit;
-    List<size_t> vs = rep->vertices();
     Graph g(*this);
-    
+    size_t v_0 = 0, v_max = rep->n_vertices();
+    bool visited[v_max] = {0};
+    while (g.n_edges() > 0) {
+        List<size_t> c;
+        size_t v = v_0;
+        do {
+            c.insert(v);
+            visited[v] = true;
+            size_t u = g.next_neighbor(v);
+            g.del_edge(v, u);
+            v = u;
+        } while (v != v_0);
+        circuit.patch_by(v_0, c);
+        for (v_0 = 0; v_0 < v_max; ++v_0)
+            if (g.degree(v_0) > 0 && visited[v_0])
+                break;
+    }
+    circuit.insert(0);
     return circuit;
 }

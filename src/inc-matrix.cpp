@@ -49,6 +49,19 @@ List<size_t> IncMatrix::neighbors(size_t u) {
     return n;
 }
 
+size_t IncMatrix::next_neighbor(size_t u) {
+    for (auto e : m) {
+        if (!e[u])
+            continue;
+        if (e[u] > 1)
+            return u;
+        for (size_t v = 0; v < v_max; ++v)
+            if (e[v] && v != u)
+                return v;
+    }
+    return v_max;
+}
+
 void IncMatrix::add_edge(size_t u, size_t v) {
     size_t *edge = new size_t[v_max];
     for (size_t i = 0; i < v_max; ++i)
@@ -66,5 +79,12 @@ void IncMatrix::del_edge(size_t u, size_t v) {
             break;
         }
     if (edge != NULL)
-        m.remove_item(edge);
+        m.remove_by(edge);
+}
+
+bool IncMatrix::adjacent(size_t u, size_t v) {
+    for (auto e : m)
+        if (e[u] && e[v])
+            return true;
+    return false;
 }

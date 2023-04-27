@@ -30,9 +30,13 @@ List<size_t> AdjList::vertices() {
 
 List<size_t> AdjList::neighbors(size_t u) {
     List<size_t> n;
-    for (auto it : m[u])
-        n.insert(it);
+    for (auto v : m[u])
+        n.insert(v);
     return n;
+}
+
+size_t AdjList::next_neighbor(size_t u) {
+    return m[u].lookup(0);
 }
 
 size_t AdjList::degree(size_t u) { return m[u].size(); }
@@ -43,6 +47,13 @@ void AdjList::add_edge(size_t u, size_t v) {
 }
 
 void AdjList::del_edge(size_t u, size_t v) {
-    m[u].remove_item(v), m[v].remove_item(u);
-    ++_n_edges;
+    if (m[u].remove_by(v) && m[v].remove_by(u))
+        --_n_edges;
+}
+
+bool AdjList::adjacent(size_t u, size_t v) {
+    for (auto w : m[u])
+        if (w == v)
+            return true;
+    return false;
 }

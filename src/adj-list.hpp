@@ -18,8 +18,10 @@ public:
     List<size_t> vertices();
     size_t degree(size_t u);
     List<size_t> neighbors(size_t u);
+    size_t next_neighbor(size_t u);
     void add_edge(size_t u, size_t v);
     void del_edge(size_t u, size_t v);
+    bool adjacent(size_t u, size_t v);
 };
 
 #endif

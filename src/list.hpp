@@ -29,11 +29,19 @@ public:
         this->head = this->last = new ListNode<T>();
         this->n = 0;
     }
-    List(const List<T>& rhs) {
+    List(const List<T> &rhs) {
         this->head = this->last = new ListNode<T>();
         this->n = 0;
-        for (ListNode<T> *node = rhs.head; node != NULL; node = node->next)
+        for (ListNode<T> *node = rhs.head->next; node != NULL; node = node->next)
             this->insert(node->item);
+    }
+    List& operator=(const List<T> &rhs) {
+        if (this->head->next != NULL)
+            delete this->head->next;
+        this->n = 0;
+        for (ListNode<T> *node = rhs.head->next; node != NULL; node = node->next)
+            this->insert(node->item);
+        return *this;
     }
     ~List() { delete head; }
     size_t size() { return n; }
@@ -112,18 +120,36 @@ public:
         return item;
     }
 
-    void remove_item(T &item) {
+    bool remove_by(T &key) {
         ListNode<T> *removed = NULL;
         ListNode<T> *current;
-        for (current = head; current->next != NULL && current->next->item != item;)
+        for (current = head; current->next != NULL && current->next->item != key;)
             current = current->next;
         removed = current->next;
+        if (removed == NULL)
+            return false;
         current->next = removed->next;
         if (current->next == NULL)
             last = current;
         --n;
         removed->next = NULL;
         delete removed;
+        return true;
+    }
+
+    void patch_by(T &key, List<T> &other) {
+        ListNode<T> *node = head;
+        for (node = head; node->next != NULL && node->next->item != key;)
+            node = node->next;
+        ListNode<T> *tail = node->next;
+        for (auto it : other) {
+            node->next = new ListNode<T>(it);
+            node = node->next;
+        }
+        node->next = tail;
+        if (tail == NULL)
+            last = node;
+        n += other.n;
     }
 
     friend std::ostream& operator<<(std::ostream& os, List<T>& list) {

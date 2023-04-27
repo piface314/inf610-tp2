@@ -22,7 +22,10 @@ public:
     void add_edge(size_t u, size_t v);
     void del_edge(size_t u, size_t v);
     List<size_t> neighbors(size_t u);
+    size_t next_neighbor(size_t u);
     size_t degree(size_t u);
+    size_t n_vertices();
+    size_t n_edges();
     void dfs(size_t v_0, VertexVoidFn process_v, EdgeVoidFn process_e);
     void dfs(size_t v_0, VertexBoolFn process_v, EdgeBoolFn process_e);
     void bfs(size_t v_0, VertexVoidFn process_v, EdgeVoidFn process_e);

@@ -45,13 +45,25 @@ List<size_t> AdjMatrix::neighbors(size_t u) {
     return n;
 }
 
+size_t AdjMatrix::next_neighbor(size_t u) {
+    for (size_t v = 0; v < v_max; ++v)
+        if (m[u*v_max + v])
+            return v;
+    return v_max;
+}
+
 void AdjMatrix::add_edge(size_t u, size_t v) {
     ++m[u*v_max + v], ++m[v*v_max + u];
     ++_n_edges;
 }
 
 void AdjMatrix::del_edge(size_t u, size_t v) {
-    if (m[u*v_max + v] && m[v*v_max + u])
+    if (m[u*v_max + v] && m[v*v_max + u]) {
         --m[u*v_max + v], --m[v*v_max + u];
-    --_n_edges;
+        --_n_edges;
+    }
+}
+
+bool AdjMatrix::adjacent(size_t u, size_t v) {
+    return m[u*v_max + v] && m[v*v_max + u];
 }
