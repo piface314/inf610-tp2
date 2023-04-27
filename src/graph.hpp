@@ -5,16 +5,16 @@
 #include <memory>
 #include "graph-rep.hpp"
 
-using VertexBoolFn = std::function<bool (size_t)>;
-using VertexVoidFn = std::function<void (size_t)>;
-using EdgeBoolFn = std::function<bool (size_t, size_t)>;
-using EdgeVoidFn = std::function<void (size_t, size_t)>;
+using VertexFn = std::function<bool (size_t)>;
+using VertexCb = std::function<void (size_t)>;
+using EdgeFn = std::function<bool (size_t, size_t)>;
+using EdgeCb = std::function<void (size_t, size_t)>;
 
 
 class Graph {
 private:
     std::unique_ptr<GraphRep> rep;
-    bool dfs(size_t v, bool *visited, VertexBoolFn pv, EdgeBoolFn pe);
+    bool dfs(size_t v, bool *visited, VertexFn pv, EdgeFn pe);
 public:
     Graph(GraphRep *rep);
     Graph(Graph &rhs);
@@ -26,10 +26,10 @@ public:
     size_t degree(size_t u);
     size_t n_vertices();
     size_t n_edges();
-    void dfs(size_t v_0, VertexVoidFn process_v, EdgeVoidFn process_e);
-    void dfs(size_t v_0, VertexBoolFn process_v, EdgeBoolFn process_e);
-    void bfs(size_t v_0, VertexVoidFn process_v, EdgeVoidFn process_e);
-    void bfs(size_t v_0, VertexBoolFn process_v, EdgeBoolFn process_e);
+    void dfs(size_t v_0, VertexCb process_v, EdgeCb process_e);
+    void dfs(size_t v_0, VertexFn process_v, EdgeFn process_e);
+    void bfs(size_t v_0, VertexCb process_v, EdgeCb process_e);
+    void bfs(size_t v_0, VertexFn process_v, EdgeFn process_e);
     bool is_eulerian();
     bool is_connected();
     size_t n_connected_components();

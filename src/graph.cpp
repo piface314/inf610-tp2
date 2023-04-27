@@ -15,20 +15,18 @@ size_t Graph::n_vertices() { return rep->n_vertices(); }
 size_t Graph::n_edges() { return rep->n_edges(); }
 
 void Graph::dfs(size_t v_0,
-                VertexVoidFn process_v, EdgeVoidFn process_e) {
-    VertexBoolFn pv = [&](size_t v) { process_v(v); return true; };
-    EdgeBoolFn pe = [&](size_t u, size_t v) { process_e(u, v); return true; };
+                VertexCb process_v, EdgeCb process_e) {
+    VertexFn pv = [&](size_t v) { process_v(v); return true; };
+    EdgeFn pe = [&](size_t u, size_t v) { process_e(u, v); return true; };
     dfs(v_0, pv, pe);
 }
 
-void Graph::dfs(size_t v_0,
-                VertexBoolFn process_v, EdgeBoolFn process_e) {
+void Graph::dfs(size_t v_0, VertexFn process_v, EdgeFn process_e) {
     bool visited[rep->n_vertices()] = {0};
     dfs(v_0, visited, process_v, process_e);
 }
 
-bool Graph::dfs(size_t v, bool *visited,
-                VertexBoolFn process_v, EdgeBoolFn process_e) {
+bool Graph::dfs(size_t v, bool *visited, VertexFn process_v, EdgeFn process_e) {
     if (not process_v(v)) return false;
     visited[v] = true;
     for (auto w : rep->neighbors(v)) {
@@ -40,15 +38,13 @@ bool Graph::dfs(size_t v, bool *visited,
     return true;
 }
 
-void Graph::bfs(size_t v_0,
-                VertexVoidFn process_v, EdgeVoidFn process_e) {
-    VertexBoolFn pv = [&](size_t v) { process_v(v); return true; };
-    EdgeBoolFn pe = [&](size_t u, size_t v) { process_e(u, v); return true; };
+void Graph::bfs(size_t v_0, VertexCb process_v, EdgeCb process_e) {
+    VertexFn pv = [&](size_t v) { process_v(v); return true; };
+    EdgeFn pe = [&](size_t u, size_t v) { process_e(u, v); return true; };
     bfs(v_0, pv, pe);
 }
 
-void Graph::bfs(size_t v_0,
-                VertexBoolFn process_v, EdgeBoolFn process_e) {
+void Graph::bfs(size_t v_0, VertexFn process_v, EdgeFn process_e) {
     bool visited[rep->n_vertices()] = {0};
     List<size_t> q;
     q.insert(v_0);
