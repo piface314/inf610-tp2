@@ -44,7 +44,7 @@ void Graph::bfs(size_t v_0, VertexCb process_v, EdgeCb process_e) {
 }
 
 void Graph::bfs(size_t v_0, VertexFn process_v, EdgeFn process_e) {
-    bool visited[rep->n_vertices()] = {0};
+    bool visited[n_vertices()] = {0};
     List<size_t> q;
     q.insert(v_0);
     while (!q.empty()) {
@@ -63,7 +63,7 @@ bool Graph::is_eulerian() {
     if (not is_connected())
         return false;
     for (auto v : rep->vertices())
-        if (rep->degree(v) % 2 == 1) 
+        if (rep->degree(v) % 2 == 1)
             return false;
     return true;
 }
@@ -84,7 +84,8 @@ size_t Graph::n_connected_components() {
     bool visited[v_max] = {0};
     size_t v_0 = 0;
     while (v_0 < v_max) {
-        dfs(v_0, visited, [](size_t u){return true;}, [](size_t u, size_t v){return true;});
+        dfs(v_0, visited, [](size_t u){return true;},
+                          [](size_t u, size_t v){return true;});
         ++n;
         for (++v_0; v_0 < v_max; ++v_0)
             if (not visited[v_0])
@@ -100,7 +101,7 @@ List<size_t> Graph::eulerian_circuit() {
     Graph g(*this);
     circuit.insert(0);
     auto v_0 = circuit.begin();
-    while (g.n_edges() > 0) {
+    while (v_0 != circuit.end()) {
         List<size_t> c;
         size_t v = *v_0;
         do {

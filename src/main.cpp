@@ -6,7 +6,7 @@
 
 
 int main(int argc, char const *argv[]) {
-    Graph g(new AdjMatrix(9));
+    Graph g(new IncMatrix(9));
     // g.add_edge(3, 3);
     g.add_edge(1, 8);
     g.add_edge(0, 1);
