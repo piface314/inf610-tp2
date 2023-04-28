@@ -10,9 +10,9 @@ template <typename T>
 class ListNode {
 public:
     T item;
-    ListNode<T> *next;
-    ListNode() : next(NULL) {}
-    ListNode(T item) : item(item), next(NULL) {}
+    ListNode<T> *next, *prev;
+    ListNode() : next(NULL), prev(NULL) {}
+    ListNode(T item) : item(item), next(NULL), prev(NULL) {}
     ~ListNode() {
         if (next != NULL)
             delete next;
@@ -47,7 +47,8 @@ public:
     size_t size() { return n; }
     bool empty() { return n == 0; }
 
-    struct ListIter  {
+    struct ListIter {
+        friend class List;
     private:
         ListNode<T> *node;
     public:
@@ -59,8 +60,10 @@ public:
 
         ListIter(ListNode<T> *ptr) : node(ptr) {}
         reference operator*() const { return node->item; }
-        ListIter& operator++() { node = node->next; return *this; }  
+        ListIter& operator++() { node = node->next; return *this; }
         ListIter operator++(int) { ListIter tmp = *this; ++(*this); return tmp; }
+        ListIter& operator--() { node = node->prev; return *this; }
+        ListIter operator--(int) { ListIter tmp = *this; --(*this); return tmp; }
         friend bool operator== (const ListIter& a, const ListIter& b) { return a.node == b.node; };
         friend bool operator!= (const ListIter& a, const ListIter& b) { return a.node != b.node; };  
     };
@@ -70,13 +73,17 @@ public:
 
     T lookup(size_t i) {
         if (i < 0 || i >= n)
-            throw std::invalid_argument("index out of bounds on lookup");
-        ListNode<T> *node = head->next;
-        if (i == n - 1)
-            node = last;
-        else
+            throw std::invalid_argument("index out of bounds");
+        ListNode<T> *node;
+        if (i <= n - i) {
+            node = head->next;
             while (i--)
                 node = node->next;
+        } else {
+            node = last;
+            while (++i < n)
+                node = node->prev;
+        }
         return node->item;
     }
 
@@ -84,17 +91,27 @@ public:
     void insert(T item) { insert(n, item); }
     void insert(size_t i, T item) {
         if (i < 0 || i > n)
-            throw std::invalid_argument("index out of bounds on insert");
+            throw std::invalid_argument("index out of bounds");
         ListNode<T> *inserted = new ListNode<T>(item);
         if (i == n) {
             last->next = inserted;
+            inserted->prev = last;
             last = inserted;
         } else {
-            ListNode<T> *current;
-            for (current = head; i > 0; --i)
-                current = current->next;
-            inserted->next = current->next;
-            current->next = inserted;
+            ListNode<T> *node;
+            if (i <= n - i) {
+                node = head;
+                while (i--)
+                    node = node->next;
+            } else {
+                node = last->prev;
+                while (++i < n)
+                    node = node->prev;
+            }
+            node->next->prev = inserted;
+            inserted->next = node->next;
+            inserted->prev = node;
+            node->next = inserted;
         }
         ++n;
     }
@@ -102,17 +119,25 @@ public:
     T pop() { return remove(0); }
     T remove(size_t i)  {
         if (i < 0 || i >= n)
-            throw std::invalid_argument("index out of bounds on remove");
+            throw std::invalid_argument("index out of bounds");
         if (n == 0)
             throw std::runtime_error("list is empty");
-        ListNode<T> *removed = NULL;
-        ListNode<T> *current;
-        for (current = head; i > 0; --i)
-            current = current->next;
-        removed = current->next;
-        current->next = removed->next;
-        if (current->next == NULL) 
-            last = current;
+        ListNode<T> *removed = NULL, *node;
+        if (i <= n - i) {
+            node = head;
+            while (i--)
+                node = node->next;
+        } else {
+            node = last->prev;
+            while (++i < n)
+                node = node->prev;
+        }
+        removed = node->next;
+        if (removed->next != NULL)
+            removed->next->prev = node;
+        node->next = removed->next;
+        if (node->next == NULL) 
+            last = node;
         --n;
         T item = removed->item;
         removed->next = NULL;
@@ -121,35 +146,39 @@ public:
     }
 
     bool remove_by(T &key) {
-        ListNode<T> *removed = NULL;
-        ListNode<T> *current;
-        for (current = head; current->next != NULL && current->next->item != key;)
-            current = current->next;
-        removed = current->next;
+        ListNode<T> *node = head;
+        while (node->next != NULL && node->next->item != key)
+            node = node->next;
+        ListNode<T> *removed = node->next;
         if (removed == NULL)
             return false;
-        current->next = removed->next;
-        if (current->next == NULL)
-            last = current;
+        if (removed->next != NULL)
+            removed->next->prev = node;
+        node->next = removed->next;
+        if (node->next == NULL)
+            last = node;
         --n;
         removed->next = NULL;
         delete removed;
         return true;
     }
 
-    void patch_by(T &key, List<T> &other) {
-        ListNode<T> *node = head;
-        for (node = head; node->next != NULL && node->next->item != key;)
-            node = node->next;
+    void concat_at(ListIter &it, List<T> &other) {
+        ListNode<T> *node = it.node == NULL ? last : (--it).node;
         ListNode<T> *tail = node->next;
-        for (auto it : other) {
-            node->next = new ListNode<T>(it);
+        for (auto item : other) {
+            node->next = new ListNode<T>(item);
+            node->next->prev = node;
             node = node->next;
         }
         node->next = tail;
         if (tail == NULL)
             last = node;
+        else
+            tail->prev = node;
         n += other.n;
+        if (it.node != NULL)
+            ++it;
     }
 
     friend std::ostream& operator<<(std::ostream& os, List<T>& list) {

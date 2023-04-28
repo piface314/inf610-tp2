@@ -14,8 +14,7 @@ size_t Graph::degree(size_t u) { return rep->degree(u); }
 size_t Graph::n_vertices() { return rep->n_vertices(); }
 size_t Graph::n_edges() { return rep->n_edges(); }
 
-void Graph::dfs(size_t v_0,
-                VertexCb process_v, EdgeCb process_e) {
+void Graph::dfs(size_t v_0, VertexCb process_v, EdgeCb process_e) {
     VertexFn pv = [&](size_t v) { process_v(v); return true; };
     EdgeFn pe = [&](size_t u, size_t v) { process_e(u, v); return true; };
     dfs(v_0, pv, pe);
@@ -72,7 +71,8 @@ bool Graph::is_eulerian() {
 bool Graph::is_connected() {
     size_t v_max = rep->n_vertices();
     bool visited[v_max] = {0};
-    dfs(0, [&](size_t u){ visited[u] = true; }, [](size_t u, size_t v){});
+    dfs(0, visited, [](size_t u){return true;},
+                    [](size_t u, size_t v){return true;});
     for (size_t v = 0; v < v_max; ++v)
         if (not visited[v])
             return false;
@@ -84,7 +84,7 @@ size_t Graph::n_connected_components() {
     bool visited[v_max] = {0};
     size_t v_0 = 0;
     while (v_0 < v_max) {
-        dfs(v_0, [&](size_t u){ visited[u] = true; }, [](size_t u, size_t v){});
+        dfs(v_0, visited, [](size_t u){return true;}, [](size_t u, size_t v){return true;});
         ++n;
         for (++v_0; v_0 < v_max; ++v_0)
             if (not visited[v_0])
@@ -98,23 +98,21 @@ List<size_t> Graph::eulerian_circuit() {
     if (!is_eulerian())
         return circuit;
     Graph g(*this);
-    size_t v_0 = 0, v_max = rep->n_vertices();
-    bool visited[v_max] = {0};
+    circuit.insert(0);
+    auto v_0 = circuit.begin();
     while (g.n_edges() > 0) {
         List<size_t> c;
-        size_t v = v_0;
+        size_t v = *v_0;
         do {
             c.insert(v);
-            visited[v] = true;
             size_t u = g.next_neighbor(v);
             g.del_edge(v, u);
             v = u;
-        } while (v != v_0);
-        circuit.patch_by(v_0, c);
-        for (v_0 = 0; v_0 < v_max; ++v_0)
-            if (g.degree(v_0) > 0 && visited[v_0])
+        } while (v != *v_0);
+        circuit.concat_at(v_0, c);
+        for (; v_0 != circuit.end(); ++v_0)
+            if (g.degree(*v_0) > 0)
                 break;
     }
-    circuit.insert(0);
     return circuit;
 }
