@@ -38,6 +38,8 @@ public:
     List& operator=(const List<T> &rhs) {
         if (this->head->next != NULL)
             delete this->head->next;
+        this->head->next = NULL;
+        this->last = this->head;
         this->n = 0;
         for (ListNode<T> *node = rhs.head->next; node != NULL; node = node->next)
             this->insert(node->item);
@@ -47,7 +49,7 @@ public:
     size_t size() { return n; }
     bool empty() { return n == 0; }
 
-    struct ListIter {
+    struct Iterator {
         friend class List;
     private:
         ListNode<T> *node;
@@ -58,18 +60,18 @@ public:
         using pointer           = T*;
         using reference         = T&;
 
-        ListIter(ListNode<T> *ptr) : node(ptr) {}
+        Iterator(ListNode<T> *ptr) : node(ptr) {}
         reference operator*() const { return node->item; }
-        ListIter& operator++() { node = node->next; return *this; }
-        ListIter operator++(int) { ListIter tmp = *this; ++(*this); return tmp; }
-        ListIter& operator--() { node = node->prev; return *this; }
-        ListIter operator--(int) { ListIter tmp = *this; --(*this); return tmp; }
-        friend bool operator== (const ListIter& a, const ListIter& b) { return a.node == b.node; };
-        friend bool operator!= (const ListIter& a, const ListIter& b) { return a.node != b.node; };  
+        Iterator& operator++() { node = node == NULL ? NULL : node->next; return *this; }
+        Iterator& operator--() { node = node == NULL ? NULL : node->prev; return *this; }
+        Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
+        Iterator operator--(int) { Iterator tmp = *this; --(*this); return tmp; }
+        friend bool operator== (const Iterator& a, const Iterator& b) { return a.node == b.node; };
+        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.node != b.node; };  
     };
 
-    ListIter begin() { return head->next; }
-    ListIter end()   { return NULL; }
+    Iterator begin() { return head->next; }
+    Iterator end() { return NULL; }
 
     T lookup(size_t i) {
         if (i < 0 || i >= n)
@@ -145,6 +147,22 @@ public:
         return item;
     }
 
+    void remove_at(Iterator &it) {
+        if (it.node == NULL)
+            return;
+        ListNode<T> *node = (--it).node;
+        ListNode<T> *removed = node->next;
+        if (removed->next != NULL)
+            removed->next->prev = node;
+        node->next = removed->next;
+        if (node->next == NULL)
+            last = node;
+        removed->next = NULL;
+        delete removed;
+        --n;
+        ++it;
+    }
+
     bool remove_by(T &key) {
         ListNode<T> *node = head;
         while (node->next != NULL && node->next->item != key)
@@ -163,7 +181,7 @@ public:
         return true;
     }
 
-    void concat_at(ListIter &it, List<T> &other) {
+    void concat_at(Iterator &it, List<T> &other) {
         ListNode<T> *node = it.node == NULL ? last : (--it).node;
         ListNode<T> *tail = node->next;
         for (auto item : other) {
