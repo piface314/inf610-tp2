@@ -82,8 +82,8 @@ bool Graph::is_eulerian() {
 
 bool Graph::is_connected() {
     bool visited[max_vertices()] = {0};
-    List<size_t> vs = vertices(); 
-    dfs(vs.lookup(0), visited);
+    List<size_t> vs = vertices();
+    dfs(vs.top(), visited);
     for (auto v : vs)
         if (not visited[v])
             return false;

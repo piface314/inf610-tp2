@@ -79,6 +79,12 @@ public:
     Iterator begin() { return head->next; }
     Iterator end() { return last; }
 
+    T top() {
+        if (empty())
+            throw std::logic_error("list is empty");
+        return head->next->item;
+    }
+
     T lookup(size_t i) {
         if (i < 0 || i >= n)
             throw std::invalid_argument("index out of bounds");
@@ -95,8 +101,17 @@ public:
         return node->item;
     }
 
+    
+    void insert(T item) {
+        ListNode<T> *inserted = new ListNode<T>(item);
+        last->prev->next = inserted;
+        inserted->prev = last->prev;
+        last->prev = inserted;
+        inserted->next = last;
+        ++n;
+    }
+
     void push(T item) { insert(0, item); }
-    void insert(T item) { insert(n, item); }
     void insert(size_t i, T item) {
         if (i < 0 || i > n)
             throw std::invalid_argument("index out of bounds");
@@ -192,11 +207,11 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, List<T>& list) {
         os << "[";
-        for (ListNode<T> *current = list.head->next; current != list.last; current = current->next)
-            if (current == list.head->next)
-                os << current->item;
+        for (auto it = list.begin(); it != list.end(); ++it)
+            if (it == list.begin())
+                os << *it;
             else
-                os << "," << current->item;
+                os << "," << *it;
         os << "]";
         return os;
     }

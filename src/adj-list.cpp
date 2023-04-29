@@ -26,7 +26,7 @@ List<size_t> AdjList::edges(size_t v) {
 }
 
 size_t AdjList::next_edge(size_t v) {
-    return m[v].lookup(0);
+    return m[v].top();
 }
 
 size_t AdjList::degree(size_t v) { return m[v].size(); }

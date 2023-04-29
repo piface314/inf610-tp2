@@ -37,9 +37,5 @@ int main(int argc, char const *argv[]) {
     g2.add_edge(3, 4);
     g2.add_edge(2, 4);
     std::cout << "Can be hamiltonian? " << g2.can_be_hamiltonian() << "\n";
-
-    int a = 0, b = 0;
-    std::cout << (a >= b - 1) << "\n";
-    std::cout << (a + 1 >= b) << "\n";
     return 0;
 }
