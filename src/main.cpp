@@ -28,5 +28,18 @@ int main(int argc, char const *argv[]) {
         List<size_t> c = g.eulerian_circuit();
         std::cout << "Eulerian circuit: " << c << "\n";
     }
+
+    Graph g2(new AdjList(10));
+    g2.add_edge(0, 1);
+    g2.add_edge(1, 2);
+    g2.add_edge(2, 0);
+    g2.add_edge(3, 1);
+    g2.add_edge(3, 4);
+    g2.add_edge(2, 4);
+    std::cout << "Can be hamiltonian? " << g2.can_be_hamiltonian() << "\n";
+
+    int a = 0, b = 0;
+    std::cout << (a >= b - 1) << "\n";
+    std::cout << (a + 1 >= b) << "\n";
     return 0;
 }

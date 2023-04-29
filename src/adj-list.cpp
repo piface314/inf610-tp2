@@ -44,11 +44,11 @@ void AdjList::del_edge(size_t u, size_t v) {
 
 void AdjList::clear_edges(size_t v) {
     for (auto it = m[v].begin(); it != m[v].end(); ++it) {
-        m[v].remove_at(it);
         if (v == *it)
-            m[v].remove_at(it);
+            m[v].remove_at(++it);
         else
             m[*it].remove_by(v);
+        m[v].remove_at(it);
         --_n_edges;
     }
 }

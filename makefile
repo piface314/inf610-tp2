@@ -32,4 +32,4 @@ obj/adj-list.o: src/graph-rep.hpp src/adj-list.hpp src/adj-list.cpp src/list.hpp
 	$(CC) -c $(CCFLAGS) src/adj-list.cpp -o obj/adj-list.o
 
 clean:
-	rm -vf obj/* bin/*
+	rm -vfr obj bin

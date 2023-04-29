@@ -128,9 +128,24 @@ List<size_t> Graph::eulerian_circuit() {
 
 bool Graph::can_be_hamiltonian() {
     Graph g(*this);
-    return g.can_be_hamiltonian(0);
+    List<size_t> vs = g.vertices();
+    auto v = vs.begin();
+    return g.can_be_hamiltonian(vs, v, 0);
 }
 
-bool Graph::can_be_hamiltonian(size_t v) {
-    return false;
+bool Graph::can_be_hamiltonian(List<size_t> &vs, List<size_t>::Iterator &v, size_t n) {
+    if (n > 0 && n_connected_components() > n)
+        return false;
+    if (n + 1 >= vs.size())
+        return true;
+    for (auto u = v; u != vs.end(); ++u) {
+        List<size_t> es = edges(*u);
+        del_vertex(*u);
+        if (not can_be_hamiltonian(vs, ++u, n + 1))
+            return false;
+        --u;
+        for (auto w : es)
+            add_edge(*u, w);
+    }
+    return true;
 }

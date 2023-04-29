@@ -15,7 +15,7 @@ class Graph {
 private:
     std::unique_ptr<GraphRep> rep;
     bool dfs(size_t v, bool *visited, VertexFn pv, EdgeFn pe);
-    bool can_be_hamiltonian(size_t v);
+    bool can_be_hamiltonian(List<size_t> &vs, List<size_t>::Iterator &v, size_t n);
 public:
     static const VertexCb vertex_noop;
     static const VertexFn vertex_true;
