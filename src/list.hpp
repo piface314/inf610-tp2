@@ -7,47 +7,45 @@
 
 
 template <typename T>
-class ListNode {
-public:
-    T item;
-    ListNode<T> *next, *prev;
-    ListNode() : next(NULL), prev(NULL) {}
-    ListNode(T item) : item(item), next(NULL), prev(NULL) {}
-    ~ListNode() {
-        if (next != NULL)
-            delete next;
-    }
-};
-
-template <typename T>
 class List {
 private:
-    ListNode<T> *head, *last;
+    class Node {
+    public:
+        T item;
+        List<T>::Node *next, *prev;
+        Node() : next(NULL), prev(NULL) {}
+        Node(T item) : item(item), next(NULL), prev(NULL) {}
+        ~Node() {
+            if (next != NULL)
+                delete next;
+        }
+    };
+    List<T>::Node *head, *last;
     size_t n;
 public:
     List() {
-        head = new ListNode<T>();
-        last = new ListNode<T>();
+        head = new List<T>::Node();
+        last = new List<T>::Node();
         head->next = last;
         last->prev = head;
         n = 0;
     }
     List(const List<T> &rhs) {
-        head = new ListNode<T>();
-        last = new ListNode<T>();
+        head = new List<T>::Node();
+        last = new List<T>::Node();
         head->next = last;
         last->prev = head;
         n = 0;
-        for (ListNode<T> *node = rhs.head->next; node != rhs.last; node = node->next)
+        for (List<T>::Node *node = rhs.head->next; node != rhs.last; node = node->next)
             insert(node->item);
     }
     List& operator=(const List<T> &rhs) {
         delete head->next;
-        last = new ListNode<T>();
+        last = new List<T>::Node();
         head->next = last;
         last->prev = head;
         n = 0;
-        for (ListNode<T> *node = rhs.head->next; node != rhs.last; node = node->next)
+        for (List<T>::Node *node = rhs.head->next; node != rhs.last; node = node->next)
             insert(node->item);
         return *this;
     }
@@ -55,10 +53,11 @@ public:
     size_t size() { return n; }
     bool empty() { return n == 0; }
 
-    struct Iterator {
+    class Iterator {
         friend class List;
     private:
-        ListNode<T> *node;
+        List<T>::Node *node;
+        Iterator(List<T>::Node *ptr) : node(ptr) {}
     public:
         using iterator_category = std::input_iterator_tag;
         using difference_type   = std::ptrdiff_t;
@@ -66,10 +65,9 @@ public:
         using pointer           = T*;
         using reference         = T&;
 
-        Iterator(ListNode<T> *ptr) : node(ptr) {}
         reference operator*() const { return node->item; }
-        Iterator& operator++() { node = node == NULL ? NULL : node->next; return *this; }
-        Iterator& operator--() { node = node == NULL ? NULL : node->prev; return *this; }
+        Iterator& operator++() { if (node->next != NULL) node = node->next; return *this; }
+        Iterator& operator--() { if (node->prev != NULL) node = node->prev; return *this; }
         Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
         Iterator operator--(int) { Iterator tmp = *this; --(*this); return tmp; }
         friend bool operator== (const Iterator& a, const Iterator& b) { return a.node == b.node; };
@@ -88,7 +86,7 @@ public:
     T lookup(size_t i) {
         if (i < 0 || i >= n)
             throw std::invalid_argument("index out of bounds");
-        ListNode<T> *node;
+        List<T>::Node *node;
         if (i < n - i) {
             node = head->next;
             while (i--)
@@ -103,7 +101,7 @@ public:
 
     
     void insert(T item) {
-        ListNode<T> *inserted = new ListNode<T>(item);
+        List<T>::Node *inserted = new List<T>::Node(item);
         last->prev->next = inserted;
         inserted->prev = last->prev;
         last->prev = inserted;
@@ -115,8 +113,8 @@ public:
     void insert(size_t i, T item) {
         if (i < 0 || i > n)
             throw std::invalid_argument("index out of bounds");
-        ListNode<T> *inserted = new ListNode<T>(item);
-        ListNode<T> *node;
+        List<T>::Node *inserted = new List<T>::Node(item);
+        List<T>::Node *node;
         if (i < n - i) {
             node = head;
             while (i--)
@@ -143,7 +141,7 @@ public:
             throw std::invalid_argument("index out of bounds");
         if (n == 0)
             throw std::runtime_error("list is empty");
-        ListNode<T> *removed = NULL, *node;
+        List<T>::Node *removed = NULL, *node;
         if (i < n - i) {
             node = head;
             while (i--)
@@ -167,20 +165,21 @@ public:
     }
 
     void remove_at(Iterator &it) {
-        ListNode<T> *node = (--it).node;
-        ListNode<T> *removed = node->next;
+        List<T>::Node *node = (--it).node;
+        List<T>::Node *removed = node->next;
         node->next = removed->next;
         node->next->prev = node;
         removed->next = NULL;
         delete removed;
         --n;
+        ++it;
     }
 
     bool remove_by(T &key) {
-        ListNode<T> *node = head;
+        List<T>::Node *node = head;
         while (node->next != last && node->next->item != key)
             node = node->next;
-        ListNode<T> *removed = node->next;
+        List<T>::Node *removed = node->next;
         if (removed == last)
             return false;
         node->next = removed->next;
@@ -192,10 +191,10 @@ public:
     }
 
     void concat_at(Iterator &it, List<T> &other) {
-        ListNode<T> *node = (--it).node;
-        ListNode<T> *tail = node->next;
+        List<T>::Node *node = (--it).node;
+        List<T>::Node *tail = node->next;
         for (auto item : other) {
-            node->next = new ListNode<T>(item);
+            node->next = new List<T>::Node(item);
             node->next->prev = node;
             node = node->next;
         }

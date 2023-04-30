@@ -74,9 +74,12 @@ void IncMatrix::del_edge(size_t u, size_t v) {
 }
 
 void IncMatrix::clear_edges(size_t v) {
-    for (auto e = m.begin(); e != m.end(); ++e)
+    auto e = m.begin();
+    while (e != m.end())
         if ((*e)[v])
             m.remove_at(e);
+        else
+            ++e;
 }
 
 bool IncMatrix::adjacent(size_t u, size_t v) {
