@@ -5,22 +5,18 @@
 #include <memory>
 #include "graph-rep.hpp"
 
-using VertexFn = std::function<bool (size_t)>;
 using VertexCb = std::function<void (size_t)>;
-using EdgeFn = std::function<bool (size_t, size_t)>;
 using EdgeCb = std::function<void (size_t, size_t)>;
 
 
 class Graph {
 private:
     std::unique_ptr<GraphRep> rep;
-    bool dfs(size_t v, bool *visited, VertexFn pv, EdgeFn pe);
+    bool dfs(size_t v, bool *visited, VertexCb pv, EdgeCb pe);
     bool can_be_hamiltonian(List<size_t> &vs, List<size_t>::Iterator &v, size_t n);
 public:
     static const VertexCb vertex_noop;
-    static const VertexFn vertex_true;
     static const EdgeCb edge_noop;
-    static const EdgeFn edge_true;
     Graph(GraphRep *rep);
     Graph(Graph &rhs);
     ~Graph();
@@ -39,9 +35,7 @@ public:
     size_t n_vertices();
     size_t n_edges();
     void dfs(size_t v_0, VertexCb process_v, EdgeCb process_e);
-    void dfs(size_t v_0, VertexFn process_v, EdgeFn process_e);
     void bfs(size_t v_0, VertexCb process_v, EdgeCb process_e);
-    void bfs(size_t v_0, VertexFn process_v, EdgeFn process_e);
     bool is_eulerian();
     bool is_connected();
     size_t n_connected_components();

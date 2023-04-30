@@ -1,9 +1,9 @@
 #include "test.hpp"
 
-size_t Test::op = 0;
+size_t op = 0;
 
 void Test::reset() {
-    Test::op = 0;
+    op = 0;
 }
 
 GraphRep *Test::make_rep(std::string &rep, size_t v_max) {
@@ -37,7 +37,7 @@ void Test::run_multi(std::string &problem, std::string &rep, std::string &fp, st
         return;
     Graph *g = NULL;
     size_t count = 0;
-    out_f << "problem,rep,n_vertices,n_edges,answer,op\n";
+    out_f << "problem,rep,n_vertices,n_edges,answer,chk_op,op\n";
     try {
         std::ifstream f(fp);
         if (problem == "euler") {
@@ -47,10 +47,13 @@ void Test::run_multi(std::string &problem, std::string &rep, std::string &fp, st
                 std::cout << "Iteration " << count++
                     << " |V| = " << n_vertices << " |E| = " << n_edges << "\n";
                 reset();
+                g->is_eulerian();
+                size_t chk_op = op;
+                reset();
                 auto circuit = g->eulerian_circuit();
                 bool answer = !circuit.empty();
                 out_f << problem << ',' << rep << ',' << n_vertices << ','
-                    << n_edges << ',' << answer << ',' << op << '\n';
+                    << n_edges << ',' << answer << ',' << chk_op << ',' << op - chk_op << '\n';
                 out_f.flush();
             }
             delete g;
@@ -64,7 +67,7 @@ void Test::run_multi(std::string &problem, std::string &rep, std::string &fp, st
                 reset();
                 bool answer = g->can_be_hamiltonian();
                 out_f << problem << ',' << rep << ',' << n_vertices << ','
-                    << n_edges << ',' << answer << ',' << op << '\n';
+                    << n_edges << ',' << answer << ",0," << op << '\n';
                 out_f.flush();
             }
             delete g;
@@ -88,13 +91,16 @@ void Test::run_one(std::string &problem, std::string &rep, std::string &fp) {
         << ", |E| = " << g->n_edges() << "\n";
     if (problem == "euler") {
         std::cout <<"Is connected? " << g->is_connected() << "\n";
+        reset();
         bool is_eulerian = g->is_eulerian();
+        size_t chk_op = op;
         std::cout <<"Is eulerian? " << is_eulerian << "\n";
+        std::cout <<"Operations: " << chk_op << "\n";
         if (is_eulerian) {
             reset();
             auto circuit = g->eulerian_circuit();
             std::cout << "Eulerian circuit: " << circuit << "\n";
-            std::cout << "Operations: " << op << "\n";
+            std::cout << "Operations: " << op - chk_op << "\n";
         }
     } else if (problem == "hamilton") {
         reset();

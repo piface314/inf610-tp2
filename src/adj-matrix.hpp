@@ -7,7 +7,6 @@
 class AdjMatrix : public GraphRep {
 private:
     size_t *m;
-    size_t _n_edges;
 public:
     AdjMatrix(size_t v_max);
     ~AdjMatrix();

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "list.hpp"
+#include "test-counter.hpp"
 
 
 class GraphRep {
@@ -22,16 +23,18 @@ public:
     };
     virtual size_t n_edges() = 0;
     virtual size_t next_vertex() {
-        for (size_t v = 0; v < v_max; ++v)
+        for (size_t v = 0; v < v_max; ++v) {
             if (vertex_map[v])
                 return v;
+        }
         return v_max;
     }
     virtual List<size_t> vertices() {
         List<size_t> vs;
-        for (size_t v = 0; v < v_max; ++v)
+        for (size_t v = 0; v < v_max; ++v) {
             if (vertex_map[v])
                 vs.insert(v);
+        }
         return vs;
     };
     virtual List<size_t> edges(size_t v) = 0;

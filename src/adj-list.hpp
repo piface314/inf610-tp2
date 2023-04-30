@@ -7,7 +7,6 @@
 class AdjList : public GraphRep {
 private:
     List<size_t> *m;
-    size_t _n_edges;
 public:
     AdjList(size_t v_max);
     ~AdjList();

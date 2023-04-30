@@ -9,6 +9,7 @@
 #include "adj-matrix.hpp"
 #include "adj-list.hpp"
 #include "list.hpp"
+#include "test-counter.hpp"
 
 
 class Test {
@@ -17,7 +18,6 @@ private:
     static void reset();
     static Graph* read_graph(std::ifstream &f, std::string &rep);
 public:
-    static size_t op;
     static void run_multi(std::string &problem, std::string &rep, std::string &fp, std::string &fp_out);
     static void run_one(std::string &problem, std::string &rep, std::string &fp);
 };
