@@ -34,13 +34,16 @@ def create_cycle(m, n, nodes):
     return None
 
 def create_eulerian_graph(n_nodes, n_edges):
+    # print(f"|V| = {n_nodes}, |E| = {n_edges}")
     m = [[0 for _ in range(n_nodes)] for _ in range(n_nodes)]
     nodes = list(range(n_nodes))
-    create_cycle(m, n_nodes, nodes)
+    c = create_cycle(m, n_nodes, nodes)
+    # print(f"Cycle: {c}")
     n_edges -= n_nodes
     while n_edges >= 3:
-        n = min(n_nodes, choice([n_edges, randint(3, max(3, n_edges - 3))]))
-        create_cycle(m, n, nodes)
+        n = randint(3, min(n_edges - 3, n_nodes)) if n_edges >= 6 else n_edges
+        c = create_cycle(m, n, nodes)
+        # print(f"Cycle: {c}")
         n_edges -= n
     return m
 
@@ -51,10 +54,11 @@ end = int(argv[4]) if len(argv) > 4 else start
 step = int(argv[5]) if len(argv) > 5 else 1
 with open(out, "w") as f:
     for i in range(start, end+1, step):
-        n_nodes, n_edges = i, int(factor*i)
-        m = create_eulerian_graph(n_nodes, n_edges)
+        m = create_eulerian_graph(i, int(factor*i))
+        n_nodes, n_edges = len(m), sum(sum(row) for row in m) // 2
+        # print(n_nodes, n_edges)
         f.write(f"{n_nodes} {n_edges}\n")
         for u in range(n_nodes):
-            for v in range(u+1, n_nodes):
+            for v in range(u, n_nodes):
                 if m[u][v]:
                     f.write(f"{u} {v}\n")
