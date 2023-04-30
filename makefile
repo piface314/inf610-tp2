@@ -13,10 +13,10 @@ obj:
 bin:
 	mkdir -p bin
 
-bin/$(TARGET): obj/main.o obj/graph.o obj/inc-matrix.o obj/adj-matrix.o obj/adj-list.o
+bin/$(TARGET): obj/main.o obj/graph.o obj/inc-matrix.o obj/adj-matrix.o obj/adj-list.o obj/test.o
 	$(CC) -o bin/$(TARGET) obj/* $(LDFLAGS)
 
-obj/main.o: src/main.cpp src/*.hpp
+obj/main.o: src/main.cpp src/test.hpp
 	$(CC) -c $(CCFLAGS) src/main.cpp -o obj/main.o
 
 obj/graph.o: src/graph.cpp src/graph.hpp src/graph-rep.hpp
@@ -30,6 +30,9 @@ obj/adj-matrix.o: src/graph-rep.hpp src/adj-matrix.hpp src/adj-matrix.cpp src/li
 
 obj/adj-list.o: src/graph-rep.hpp src/adj-list.hpp src/adj-list.cpp src/list.hpp
 	$(CC) -c $(CCFLAGS) src/adj-list.cpp -o obj/adj-list.o
+
+obj/test.o: src/test.cpp src/*.hpp
+	$(CC) -c $(CCFLAGS) src/test.cpp -o obj/test.o
 
 clean:
 	rm -vfr obj bin

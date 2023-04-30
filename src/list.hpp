@@ -79,13 +79,13 @@ public:
 
     T top() {
         if (empty())
-            throw std::logic_error("list is empty");
+            throw std::logic_error("(List<T>::top) list is empty");
         return head->next->item;
     }
 
     T lookup(size_t i) {
         if (i < 0 || i >= n)
-            throw std::invalid_argument("index out of bounds");
+            throw std::invalid_argument("(List<T>::lookup) index out of bounds");
         List<T>::Node *node;
         if (i < n - i) {
             node = head->next;
@@ -112,7 +112,7 @@ public:
     void push(T item) { insert(0, item); }
     void insert(size_t i, T item) {
         if (i < 0 || i > n)
-            throw std::invalid_argument("index out of bounds");
+            throw std::invalid_argument("(List<T>::insert) index out of bounds");
         List<T>::Node *inserted = new List<T>::Node(item);
         List<T>::Node *node;
         if (i < n - i) {
@@ -138,9 +138,9 @@ public:
     T pop() { return remove(0); }
     T remove(size_t i)  {
         if (i < 0 || i >= n)
-            throw std::invalid_argument("index out of bounds");
+            throw std::invalid_argument("(List<T>::remove) index out of bounds");
         if (n == 0)
-            throw std::runtime_error("list is empty");
+            throw std::runtime_error("(List<T>::remove) list is empty");
         List<T>::Node *removed = NULL, *node;
         if (i < n - i) {
             node = head;
