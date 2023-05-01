@@ -179,7 +179,7 @@ public:
     bool remove_by(T &key) {
         List<T>::Node *node = head;
         while (++op && node->next != last && node->next->item != key)
-           node = node->next;
+            node = node->next;
         List<T>::Node *removed = node->next;
         if (removed == last)
             return false;

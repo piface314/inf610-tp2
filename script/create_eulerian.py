@@ -3,7 +3,7 @@ from sys import argv
 
 
 if len(argv) <= 3:
-    print(f"Usage:\n\t$ {argv[0]} <output> <edge-factor> <n-min> [<n-max> [<step>]]")
+    print(f"Usage:\n\t$ python {argv[0]} <output> <edge-factor> <n-min> [<n-max> [<step>]]")
     exit(1)
 
 def create_cycle_r(m, cycle, n, nodes):
