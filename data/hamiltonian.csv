@@ -1,0 +1,14 @@
+problem,rep,n_vertices,n_edges,answer,chk_op,op
+hamilton,AdjList,6,12,1,0,1196
+hamilton,AdjList,8,16,1,0,5970
+hamilton,AdjList,10,20,1,0,28771
+hamilton,AdjList,12,24,1,0,133099
+hamilton,AdjList,14,28,1,0,565522
+hamilton,AdjList,16,32,1,0,2714955
+hamilton,AdjList,18,36,1,0,11688257
+hamilton,AdjList,20,40,1,0,51477691
+hamilton,AdjList,22,44,1,0,213266981
+hamilton,AdjList,24,48,1,0,964603148
+hamilton,AdjList,26,52,1,0,3959695774
+hamilton,AdjList,28,56,1,0,17357567291
+hamilton,AdjList,30,60,1,0,68702817794

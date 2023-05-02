@@ -36,9 +36,8 @@ List<size_t> AdjMatrix::edges(size_t v) {
     List<size_t> edges;
     for (size_t u = 0; u < v_max; ++u) {
         size_t e = (u == v) ? m[v*v_max + u]/2 : m[v*v_max + u];
-        for (size_t i = 0; i < e; ++i) {
-++op;       edges.insert(u);
-        }
+        for (size_t i = 0; ++op && i < e; ++i)
+            edges.insert(u);
     }
     return edges;
 }

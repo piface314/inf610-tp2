@@ -71,6 +71,7 @@ public:
         Iterator& operator--() { if (node->prev != NULL) node = node->prev; return *this; }
         Iterator operator++(int) { Iterator tmp = *this; ++(*this); return tmp; }
         Iterator operator--(int) { Iterator tmp = *this; --(*this); return tmp; }
+        Iterator operator+(size_t i) { Iterator tmp = *this; while(i--)++tmp; return tmp; }
         friend bool operator== (const Iterator& a, const Iterator& b) { return a.node == b.node; };
         friend bool operator!= (const Iterator& a, const Iterator& b) { return a.node != b.node; };  
     };

@@ -24,7 +24,7 @@ size_t AdjList::n_edges() {
     return d/2;
 }
 
-List<size_t> AdjList::edges(size_t v) {    
+List<size_t> AdjList::edges(size_t v) {
 ++op; return m[v];
 }
 

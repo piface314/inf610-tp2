@@ -26,17 +26,15 @@ void Graph::dfs(size_t v_0, VertexCb process_v, EdgeCb process_e) {
     dfs(v_0, visited, process_v, process_e);
 }
 
-bool Graph::dfs(size_t v, bool *visited,
+void Graph::dfs(size_t v, bool *visited,
     VertexCb process_v = vertex_noop, EdgeCb process_e = edge_noop) {
     process_v(v);
     visited[v] = true;
     for (auto w : edges(v)) {
         process_e(v, w);
 ++op;   if (!visited[w])
-            if (not dfs(w, visited, process_v, process_e))
-                return false;
+            dfs(w, visited, process_v, process_e);
     }
-    return true;
 }
 
 void Graph::bfs(size_t v_0, VertexCb process_v, EdgeCb process_e) {
@@ -58,10 +56,9 @@ void Graph::bfs(size_t v_0, VertexCb process_v, EdgeCb process_e) {
 bool Graph::is_eulerian() {
     if (not is_connected())
         return false;
-    for (auto v : vertices()) {
+    for (auto v : vertices())
         if (degree(v) % 2 == 1)
             return false;
-    }
     return true;
 }
 
@@ -80,7 +77,7 @@ size_t Graph::n_connected_components() {
     size_t n = 0;
     bool visited[max_vertices()] = {0};
     for (auto v : vertices()) {
-        if (visited[v])
+++op;   if (visited[v])
             continue;
         dfs(v, visited);
         ++n;
@@ -90,7 +87,7 @@ size_t Graph::n_connected_components() {
 
 List<size_t> Graph::eulerian_circuit() {
     List<size_t> circuit;
-    if (!is_eulerian())
+    if (not is_eulerian())
         return circuit;
     Graph g(*this);
     circuit.insert(g.next_vertex());
@@ -115,21 +112,19 @@ List<size_t> Graph::eulerian_circuit() {
 bool Graph::can_be_hamiltonian() {
     Graph g(*this);
     List<size_t> vs = g.vertices();
-    auto v = vs.begin();
-    return g.can_be_hamiltonian(vs, v, 0);
+    return g.can_be_hamiltonian(vs, vs.begin(), vs.size());
 }
 
-bool Graph::can_be_hamiltonian(List<size_t> &vs, List<size_t>::Iterator &v, size_t n) {
-    if (n > 0 && n_connected_components() > n)
-        return false;
-    if (n + 1 >= vs.size())
+bool Graph::can_be_hamiltonian(List<size_t> &vs, List<size_t>::Iterator v, size_t n) {
+    if (n == 0)
         return true;
+    if (n < vs.size() && n_connected_components() > n)
+        return false;
     for (auto u = v; u != vs.end(); ++u) {
         List<size_t> es = edges(*u);
         del_vertex(*u);
-        if (not can_be_hamiltonian(vs, ++u, n + 1))
+        if (not can_be_hamiltonian(vs, u + 1, n - 1))
             return false;
-        --u;
         for (auto w : es)
             add_edge(*u, w);
     }

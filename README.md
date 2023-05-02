@@ -19,3 +19,5 @@ $ ./bin/inf610-tp2 (one|multi) (euler|hamilton) (IncMatrix|AdjMatrix|AdjList) <i
 - `<output-fp>` é opcional, sendo necessário apenas quando o modo é `multi`, indica em qual arquivo devem ser escritos os resultados.
 
 O formato de entrada para os arquivos de teste deve seguir o seguinte padrão. Deve conter pelo menos uma repetição de um conjunto de linhas contendo em cada uma dois números inteiros. A primeira linha indica respectivamente quantos vértices e quantas arestas. As linhas seguintes, sendo uma para cada aresta, indica sobre quais vértices aquela aresta incide. A numeração dos vértices é 0-indexada.
+
+As implementações das representações suportam grafos não direcionados e não ponderados, podendo ter arestas múltiplas e laços.

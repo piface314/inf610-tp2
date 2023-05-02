@@ -12,8 +12,8 @@ using EdgeCb = std::function<void (size_t, size_t)>;
 class Graph {
 private:
     std::unique_ptr<GraphRep> rep;
-    bool dfs(size_t v, bool *visited, VertexCb pv, EdgeCb pe);
-    bool can_be_hamiltonian(List<size_t> &vs, List<size_t>::Iterator &v, size_t n);
+    void dfs(size_t v, bool *visited, VertexCb pv, EdgeCb pe);
+    bool can_be_hamiltonian(List<size_t> &vs, List<size_t>::Iterator v, size_t n);
 public:
     static const VertexCb vertex_noop;
     static const EdgeCb edge_noop;
